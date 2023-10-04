@@ -109,6 +109,5 @@ function findByISBN(isbn){
     return null;
 }
 
-public_users.post()
 
 module.exports.general = public_users;
