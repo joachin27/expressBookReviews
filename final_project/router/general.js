@@ -36,6 +36,93 @@ public_users.get('/',function (req, res) {
   return res.status(200).json({books});
 });
 
+
+//ASYNC AWAIT
+const getBooks = async () => {
+    const response = await public_users.get('/');
+  
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      throw new Error('Failed to get book list');
+    }
+};
+  
+public_users.get('/', async (req, res) => {
+    const books = await getBooks();
+
+    res.status(200).json({ books });
+});
+
+
+
+//ASYNC WAIT BASED ON ISBN
+const findByISBN = async (isbn) => {
+    const response = await public_users.get(`/isbn/${isbn}`);
+  
+    if (response.status === 200) {
+      return response.json();
+    } else {
+      throw new Error('Book not found');
+    }
+};
+  
+public_users.get('/isbn/:isbn', async (req, res) => {
+try {
+    const book = await findByISBN(req.params.isbn);
+
+    res.json(book);
+} catch (error) {
+    res.status(404).send(error.message);
+}
+});
+
+
+//ASYNC AWAIT BASED ON AUTHOR
+const findByAuthor = async (author) => {
+    for (const key in books) {
+      if (books[key].author === author) {
+        return books[key];
+      }
+    }
+  
+    throw new Error('Book not found');
+};
+  
+public_users.get('/author/:author', async (req, res) => {
+try {
+    const book = await findByAuthor(req.params.author);
+
+    res.json(book);
+} catch (error) {
+    res.status(404).send(error.message);
+}
+});
+
+
+//ASYNC AWAIT BASED ON TITLE
+const findByTitle = async (title) => {
+    for (const key in books) {
+      if (books[key].title === title) {
+        return books[key];
+      }
+    }
+  
+    throw new Error('Book not found');
+};
+  
+public_users.get('/title/:title', async (req, res) => {
+try {
+    const book = await findByTitle(req.params.title);
+
+    res.json(book);
+} catch (error) {
+    res.status(404).send(error.message);
+}
+});
+
+
+
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
     const author = req.params.author;
